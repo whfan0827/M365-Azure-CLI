@@ -4,15 +4,14 @@ Import-Module Microsoft.Graph
 # Login with admin account (supports MFA)
 Connect-MgGraph -Scopes "User.Read.All"
 
-# Get all users with UserPrincipalName and OnPremisesImmutableId
-$allUsers = Get-MgUser -All -Property UserPrincipalName,OnPremisesImmutableId
+# Get all users with UserPrincipalName, Mail and OnPremisesImmutableId
+$allUsers = Get-MgUser -All -Property UserPrincipalName,Mail,OnPremisesImmutableId
 
-# Display UserPrincipalName and OnPremisesImmutableId in table
-$allUsers | Select-Object UserPrincipalName, OnPremisesImmutableId | Format-Table -AutoSize
+# Display UserPrincipalName, Mail and OnPremisesImmutableId in table
+$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId | Format-Table -AutoSize
 
-# Export UserPrincipalName and OnPremisesImmutableId to CSV file
-$allUsers | Select-Object UserPrincipalName, OnPremisesImmutableId | Export-Csv -Path "C:\Export\AzureAD_Users_ImmutableId.csv" -NoTypeInformation -Encoding UTF8
+# Export UserPrincipalName, Mail and OnPremisesImmutableId to CSV file
+$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId | Export-Csv -Path "C:\Export\AzureAD_Users_ImmutableId.csv" -NoTypeInformation -Encoding UTF8
 
-# Show all users with empty OnPremisesImmutableId
-$allUsers | Where-Object { !$_.OnPremisesImmutableId } | Select-Object UserPrincipalName
-
+# Show all users with empty OnPremisesImmutableId (include Mail)
+$allUsers | Where-Object { !$_.OnPremisesImmutableId } | Select-Object UserPrincipalName, Mail
