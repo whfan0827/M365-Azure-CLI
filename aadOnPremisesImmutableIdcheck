@@ -4,14 +4,14 @@ Import-Module Microsoft.Graph
 # Login with admin account (supports MFA)
 Connect-MgGraph -Scopes "User.Read.All"
 
-# Get all users with UserPrincipalName, Mail and OnPremisesImmutableId
-$allUsers = Get-MgUser -All -Property UserPrincipalName,Mail,OnPremisesImmutableId
+# Get all users with UserPrincipalName, Mail, OnPremisesImmutableId, and ProxyAddresses
+$allUsers = Get-MgUser -All -Property UserPrincipalName,Mail,OnPremisesImmutableId,ProxyAddresses
 
-# Display UserPrincipalName, Mail and OnPremisesImmutableId in table
-$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId | Format-Table -AutoSize
+# Display UserPrincipalName, Mail, OnPremisesImmutableId, and ProxyAddresses in table
+$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId, ProxyAddresses | Format-Table -AutoSize
 
-# Export UserPrincipalName, Mail and OnPremisesImmutableId to CSV file
-$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId | Export-Csv -Path "C:\Export\AzureAD_Users_ImmutableId.csv" -NoTypeInformation -Encoding UTF8
+# Export UserPrincipalName, Mail, OnPremisesImmutableId, and ProxyAddresses to CSV file
+$allUsers | Select-Object UserPrincipalName, Mail, OnPremisesImmutableId, @{Name="ProxyAddresses";Expression={($_.ProxyAddresses -join ";")}} | Export-Csv -Path "C:\Export\AzureAD_Users_ImmutableId.csv" -NoTypeInformation -Encoding UTF8
 
-# Show all users with empty OnPremisesImmutableId (include Mail)
-$allUsers | Where-Object { !$_.OnPremisesImmutableId } | Select-Object UserPrincipalName, Mail
+# Show all users with empty OnPremisesImmutableId (include Mail and ProxyAddresses)
+$allUsers | Where-Object { !$_.OnPremisesImmutableId } | Select-Object UserPrincipalName, Mail, @{Name="ProxyAddresses";Expression={($_.ProxyAddresses -join ";")}}
